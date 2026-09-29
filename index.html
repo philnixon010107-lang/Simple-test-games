@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Target Game</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background: #222; color: white; margin-top: 50px; }
+        canvas { background: #333; border: 2px solid #555; cursor: crosshair; box-shadow: 0px 0px 15px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+    <h1>Score: <span id="score">0</span></h1>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        let score = 0;
+        let target = { x: 300, y: 200, radius: 25 };
+
+        function drawTarget() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(target.x, target.y, target.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "#ff4757";
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#ffffff";
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        canvas.addEventListener("mousedown", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // Calculate distance between mouse click and target center
+            const dist = Math.hypot(mouseX - target.x, mouseY - target.y);
+            
+            if (dist < target.radius) {
+                score++;
+                document.getElementById("score").innerText = score;
+                // Move target to a new random position
+                target.x = Math.random() * (canvas.width - target.radius * 2) + target.radius;
+                target.y = Math.random() * (canvas.height - target.radius * 2) + target.radius;
+                drawTarget();
+            }
+        });
+
+        drawTarget();
+    </script>
+</body>
+</html>
